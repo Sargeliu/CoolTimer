@@ -3,6 +3,8 @@ package com.example.cooltimer;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -56,5 +58,36 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void start(View view) { // создаём таймер
+        CountDownTimer countDownTimer = new CountDownTimer(seekBar.getProgress() * 1000, 1000) { // передаем значение от ползунка к TextView
+            @Override
+            public void onTick(long millisUntilFinished) { // данный метод обновляет каждую секунду
+                int minutes = (int) millisUntilFinished/1000/60;
+                int seconds = (int) millisUntilFinished/1000 - (minutes * 60);
+
+                String minutesString = "";
+                String secondsString = "";
+
+                if (minutes < 10) { // 10 ставим чтоб были нули впереди (например 05:09)
+                    minutesString = "0" + minutes;
+                } else {
+                    minutesString = String.valueOf(minutes);
+                }
+
+                if (seconds < 10) {
+                    secondsString = "0" + seconds;
+                } else {
+                    secondsString = String.valueOf(seconds);
+                }
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        countDownTimer.start();
     }
 }
