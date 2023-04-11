@@ -69,16 +69,12 @@ public class MainActivity extends AppCompatActivity {
                 public void onFinish() {
                     MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.bell_sound); // добавляем звук колокольчика при окончании таймера
                     mediaPlayer.start(); // запускает звук при окончании таймера
+                    resetTimer(); // по окончанию вернёт значения по умолчанию
                 }
             };
             countDownTimer.start();
         } else {
-            countDownTimer.cancel(); // остановить переменную
-            textView.setText("00:30"); //возвращаем цифры по умолчанию
-            button.setText("Start"); //возвращаем текст по умолчанию
-            seekBar.setEnabled(true); //вкл. возможность двигать ползунок
-            seekBar.setProgress(30);
-            isTimerOn = false;
+            resetTimer();
         }
     }
 
@@ -103,4 +99,14 @@ public class MainActivity extends AppCompatActivity {
 
         textView.setText(minutesString + ":" + secondsString); // устанавливаем наши значения в TextView
     }
+
+    private void resetTimer() { // рефакторинг
+        countDownTimer.cancel(); // остановить переменную
+        textView.setText("00:30"); //возвращаем цифры по умолчанию
+        button.setText("Start"); //возвращаем текст по умолчанию
+        seekBar.setEnabled(true); //вкл. возможность двигать ползунок
+        seekBar.setProgress(30);
+        isTimerOn = false;
+    }
+
 }
