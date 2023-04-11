@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         CountDownTimer countDownTimer = new CountDownTimer(seekBar.getProgress() * 1000, 1000) { // передаем значение от ползунка к TextView
             @Override
             public void onTick(long millisUntilFinished) { // данный метод обновляет каждую секунду
-
                 updateTimer(millisUntilFinished);
             }
 
