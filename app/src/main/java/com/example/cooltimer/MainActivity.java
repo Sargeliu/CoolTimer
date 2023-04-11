@@ -2,6 +2,7 @@ package com.example.cooltimer;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -52,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
-
+                MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.bell_sound); // добавляем звук колокольчика при окончании таймера
+                mediaPlayer.start(); // запускает звук при окончании таймера
             }
         };
         countDownTimer.start();
