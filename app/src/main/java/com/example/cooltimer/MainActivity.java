@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private SeekBar seekBar;
     private TextView textView;
@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private Button button; // чтоб изменять текст на кнопке
 
     private CountDownTimer countDownTimer;
+    private int defaultInterval;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,17 +35,18 @@ public class MainActivity extends AppCompatActivity {
 
         seekBar = findViewById(R.id.seekBar); // привязываем наши переменные
         textView = findViewById(R.id.textView);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         seekBar.setMax(600); // устанавливаем max значение (в нашем случае 10 минут = 600 секунд)
-        seekBar.setProgress(30); // устанавливаем таймер на 30 сек.
         isTimerOn = false; // ставим что изначально не вкл.
+        setIntervalFromSharedPreferences(sharedPreferences);
 
         button = findViewById(R.id.button);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() { // привязывем TextView и SeedBar
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                long progessInMillis = progress * 1000; // создали переменну для переводи милисекунд в секунды т.к. progress в секундах
-                updateTimer(progessInMillis);
+                long progressInMillis = progress * 1000; // создали переменну для переводи милисекунд в секунды т.к. progress в секундах
+                updateTimer(progressInMillis);
             }
 
             @Override
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 
     public void start(View view) { // создаём таймер
@@ -123,11 +128,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void resetTimer() { // рефакторинг
         countDownTimer.cancel(); // остановить переменную
-        textView.setText("00:30"); //возвращаем цифры по умолчанию
         button.setText("Start"); //возвращаем текст по умолчанию
         seekBar.setEnabled(true); //вкл. возможность двигать ползунок
-        seekBar.setProgress(30);
         isTimerOn = false;
+        setIntervalFromSharedPreferences(sharedPreferences);
     }
 
     @Override
@@ -151,5 +155,24 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setIntervalFromSharedPreferences(SharedPreferences sharedPreferences) {
+        defaultInterval = Integer.valueOf(sharedPreferences.getString("default_interval", "30"));
+        textView.setText("00:" + defaultInterval);
+        seekBar.setProgress(defaultInterval);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("default_interval")) {
+            setIntervalFromSharedPreferences(sharedPreferences);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 }
