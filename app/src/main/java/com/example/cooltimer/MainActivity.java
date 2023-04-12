@@ -77,8 +77,18 @@ public class MainActivity extends AppCompatActivity {
 
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     if (sharedPreferences.getBoolean("enable_sound", true)) {
-                        MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.bell_sound); // добавляем звук колокольчика при окончании таймера
-                        mediaPlayer.start(); // запускает звук при окончании таймера
+
+                        String melodyName = sharedPreferences.getString("timer_melody", "bell");
+                        if (melodyName.equals("bell")) {
+                            MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.bell_sound); // добавляем звук колокольчика при окончании таймера
+                            mediaPlayer.start(); // запускает звук при окончании таймера
+                        } else if (melodyName.equals("alarm_siren")) {
+                            MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm_siren_sound);
+                            mediaPlayer.start();
+                        } else if (melodyName.equals("bip")) {
+                            MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.bip_sound);
+                            mediaPlayer.start();
+                        }
                     }
                     resetTimer(); // по окончанию вернёт значения по умолчанию
                 }
