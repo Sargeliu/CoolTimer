@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -158,7 +159,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private void setIntervalFromSharedPreferences(SharedPreferences sharedPreferences) {
-        defaultInterval = Integer.valueOf(sharedPreferences.getString("default_interval", "30"));
+
+        try {
+            defaultInterval = Integer.valueOf(sharedPreferences.getString("default_interval", "30"));
+        } catch (Exception exception) {
+            Toast.makeText(this, "Some error happens", Toast.LENGTH_SHORT).show();
+        }
+
         long defaultIntervalInMillis = defaultInterval * 1000;
         updateTimer(defaultIntervalInMillis);
         seekBar.setProgress(defaultInterval);
